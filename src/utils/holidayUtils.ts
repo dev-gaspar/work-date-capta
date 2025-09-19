@@ -24,14 +24,22 @@ export class HolidayManager {
 
     public loadHolidays(): void {
         try {
-            const holidaysPath = path.join(process.cwd(), 'WorkingDays.json');
+            // En entorno Lambda, el archivo estará en el directorio actual
+            // En desarrollo local, estará en el directorio raíz del proyecto
+            let holidaysPath = path.join(process.cwd(), 'WorkingDays.json');
+
+            // Si no existe en el directorio actual, intentar en el directorio padre (para desarrollo local)
+            if (!fs.existsSync(holidaysPath)) {
+                holidaysPath = path.join(__dirname, '../../WorkingDays.json');
+            }
+
             const holidaysData = fs.readFileSync(holidaysPath, 'utf-8');
             const holidaysList: HolidayDate[] = JSON.parse(holidaysData);
 
             this.holidays = new Set(holidaysList);
             this.isLoaded = true;
 
-            console.log(`Cargados ${holidaysList.length} días festivos`);
+            console.log(`Cargados ${holidaysList.length} días festivos desde: ${holidaysPath}`);
         } catch (error) {
             console.error('Error cargando días festivos:', error);
             throw new Error('No se pudieron cargar los días festivos');

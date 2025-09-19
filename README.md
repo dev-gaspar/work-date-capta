@@ -249,4 +249,63 @@ Los días festivos se cargan desde `WorkingDays.json` con fechas para 2025-2035,
 - **Durante almuerzo**: Se ajusta a 1:00 PM
 - **Fin de semana/festivo**: Se mueve al siguiente día laboral a 8:00 AM
 
-## 🚀 Próximos Pasos - Despliegue AWS Lambda
+## 🚀 Deployment con AWS Lambda
+
+Este proyecto incluye configuración completa para deployment en AWS Lambda usando CDK con un sistema automatizado que maneja las dependencias automáticamente.
+
+### Scripts de Deployment
+
+```bash
+# Deploy completo (recomendado para producción)
+npm run deploy
+
+# Deploy rápido para desarrollo (usa hotswap)
+npm run deploy:watch
+
+# Solo compilar y preparar paquete Lambda
+npm run build:lambda
+
+# Solo preparar paquete Lambda (después de build)
+npm run prepare-lambda
+```
+
+### ¿Cómo funciona la automatización?
+
+El sistema automatizado (`scripts/prepare-lambda.js`) se encarga de:
+
+1. **Limpiar y recrear** el directorio `lambda-package/`
+2. **Copiar código compilado** desde `dist/`
+3. **Crear package.json optimizado** con solo dependencias de producción
+4. **Instalar dependencias** específicas para Lambda
+5. **Copiar archivos adicionales** como `WorkingDays.json`
+
+### Flujo de trabajo recomendado
+
+```bash
+# Para desarrollo iterativo
+npm run deploy:watch
+
+# Para deployment de producción  
+npm run deploy
+
+# Para troubleshooting
+npm run build:lambda  # Solo preparar sin deployar
+```
+
+### Configuración AWS
+
+1. **Bootstrap CDK** (primera vez):
+   ```bash
+   cdk bootstrap
+   ```
+
+2. **Configurar credenciales AWS** usando AWS CLI o variables de entorno
+
+### API Desplegada
+
+Una vez deployada, la API estará disponible en:
+- **Health check**: `https://{api-url}/prod/health`
+- **Endpoint principal**: `https://{api-url}/prod/work-date`
+- **Documentación**: `https://{api-url}/prod/`
+
+**Nota**: El directorio `lambda-package/` se genera automáticamente
