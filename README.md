@@ -51,8 +51,9 @@ fechas-habiles-capta/
 │       ├── apiErrorHandler.ts   # Manejo centralizado de errores
 │       └── holidayUtils.ts      # Gestión de días festivos
 ├── tests/
-│   ├── dateService.test.ts      # Tests del servicio de fechas
-│   └── holidayUtils.test.ts     # Tests de utilidades de festivos
+│   ├── dateService.test.ts      # Tests unitarios del servicio de fechas
+│   ├── holidayUtils.test.ts     # Tests de utilidades de festivos
+│   └── integrationApi.test.ts   # Tests de integración de la API
 ├── dist/                        # Código compilado (generado)
 ├── WorkingDays.json             # Lista de días festivos 2025-2035
 ├── package.json
@@ -149,15 +150,13 @@ GET /work-date?days=5&hours=4&date=2025-04-10T15:00:00.000Z
 # Resultado: 2025-04-21T20:00:00.000Z (saltando festivos 17-18 abril)
 ```
 
-### Ejemplo 4: Usar fecha actual
-```bash
 GET /work-date?days=1&hours=2
 # Calcula desde la hora actual en Colombia
 ```
 
 ## 🧪 Tests
 
-El proyecto incluye tests unitarios completos:
+El proyecto incluye tests unitarios y de integración:
 
 ```bash
 # Ejecutar todos los tests
@@ -168,15 +167,17 @@ npm test -- --coverage
 ```
 
 ### Tests Implementados
-- **DateService**: Todos los ejemplos de la prueba técnica
-- **HolidayManager**: Validación de festivos, fines de semana y días laborales
-- **Casos edge**: Horarios de almuerzo, múltiples festivos consecutivos
+- **DateService**: Tests unitarios con casos de la prueba técnica
+- **HolidayManager**: Validación de festivos, fines de semana y días laborales  
+- **Integration API**: Tests de integración que validan la API completa con peticiones HTTP reales
+- **Casos edge**: Horarios de almuerzo, aproximaciones, múltiples festivos consecutivos
 
 ## 🔧 Tecnologías Utilizadas
 
 ### Dependencias de Producción
 - **Express.js** `^4.18.2` - Framework web
 - **Day.js** `^1.11.10` - Manipulación de fechas y zonas horarias
+- **Axios** `^1.6.0` - Cliente HTTP para peticiones HTTP
 
 ### Dependencias de Desarrollo
 - **TypeScript** `^5.3.3` - Tipado estático

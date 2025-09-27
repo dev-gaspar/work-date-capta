@@ -9,6 +9,7 @@
     "dev": "ts-node src/server.ts",
     "test": "jest",
     "test:watch": "jest --watch",
+    "test:integration": "jest tests/api-integration.test.ts --verbose",
     "prepare-lambda": "node scripts/prepare-lambda.js",
     "build:lambda": "npm run build && npm run prepare-lambda",
     "deploy": "npm run build:lambda && cdk deploy",
@@ -25,6 +26,7 @@
   "license": "MIT",
   "dependencies": {
     "@vendia/serverless-express": "^4.12.6",
+    "axios": "^1.6.0",
     "dayjs": "^1.11.10",
     "express": "^4.18.2"
   },

@@ -54,13 +54,13 @@ describe('DateService - Ejemplos de prueba técnica', () => {
             expect(resultDate.isSame(expectedDate, 'minute')).toBe(true);
         });
 
-        test('Ejemplo 4: Domingo 6:00 PM + 1 día = Martes 8:00 AM', () => {
-            // Domingo 19 de enero de 2025 a las 6:00 PM Colombia (23:00 UTC)
-            const params = createParams(1, 0, '2025-01-19T23:00:00.000Z');
+        test('Ejemplo 4: Domingo 6:00 PM + 1 día = Lunes 5:00 PM', () => {
+            // Domingo 9 de febrero de 2025 a las 6:00 PM Colombia (23:00 UTC) - evitando festivos de enero
+            const params = createParams(1, 0, '2025-02-09T23:00:00.000Z');
             const result = dateService.calculateWorkingDate(params);
 
-            // Debería ser martes 21 de enero a las 8:00 AM Colombia (13:00 UTC)
-            const expectedDate = dayjs('2025-01-21T13:00:00.000Z');
+            // Debería ser lunes 10 de febrero a las 5:00 PM Colombia (22:00 UTC)
+            const expectedDate = dayjs('2025-02-10T22:00:00.000Z');
             const resultDate = dayjs(result);
 
             expect(resultDate.isSame(expectedDate, 'minute')).toBe(true);
@@ -95,8 +95,8 @@ describe('DateService - Ejemplos de prueba técnica', () => {
             const params = createParams(1, 0, '2025-01-20T17:30:00.000Z');
             const result = dateService.calculateWorkingDate(params);
 
-            // Debería ser martes 21 de enero a las 1:00 PM Colombia (18:00 UTC) porque se ajusta al final del almuerzo
-            const expectedDate = dayjs('2025-01-21T18:00:00.000Z');
+            // Debería ser martes 21 de enero a las 12:00 PM Colombia (17:00 UTC) porque se aproxima hacia atrás
+            const expectedDate = dayjs('2025-01-21T17:00:00.000Z');
             const resultDate = dayjs(result);
 
             expect(resultDate.isSame(expectedDate, 'minute')).toBe(true);
@@ -130,12 +130,12 @@ describe('DateService - Ejemplos de prueba técnica', () => {
 
     describe('Casos edge adicionales', () => {
 
-        test('Durante horario de almuerzo debe ajustarse a 1:00 PM', () => {
+        test('Durante horario de almuerzo debe ajustarse hacia atrás a 12:00 PM', () => {
             // Lunes a las 12:30 PM Colombia (17:30 UTC)
             const params = createParams(0, 1, '2025-01-20T17:30:00.000Z');
             const result = dateService.calculateWorkingDate(params);
 
-            // Debería ajustarse a 1:00 PM y agregar 1 hora = 2:00 PM Colombia (19:00 UTC)
+            // Debería ajustarse hacia atrás a 12:00 PM y agregar 1 hora = 2:00 PM Colombia (19:00 UTC)
             const expectedDate = dayjs('2025-01-20T19:00:00.000Z');
             const resultDate = dayjs(result);
 
@@ -143,13 +143,13 @@ describe('DateService - Ejemplos de prueba técnica', () => {
         });
 
         test('Múltiples días con festivos en el medio', () => {
-            // Día laboral en enero para sumar 2 días
-            const params = createParams(2, 0, '2025-01-02T13:00:00.000Z'); // 2 enero 8:00 AM Colombia
+            // Día laboral en febrero para sumar 2 días (evitando festivos de enero)
+            const params = createParams(2, 0, '2025-02-03T13:00:00.000Z'); // 3 febrero 8:00 AM Colombia (lunes)
             const result = dateService.calculateWorkingDate(params);
 
-            // Debería ir 2 días laborales adelante: 3 enero + 7 enero (saltando el 6 que es festivo)
+            // Debería ir 2 días laborales adelante: martes 4 febrero + miércoles 5 febrero
             const resultDate = dayjs(result);
-            expect(resultDate.format('YYYY-MM-DD')).toBe('2025-01-07'); // 7 enero porque 6 es festivo
+            expect(resultDate.format('YYYY-MM-DD')).toBe('2025-02-05'); // 5 febrero (miércoles)
         });
     });
 });
